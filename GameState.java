@@ -21,18 +21,24 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class GameState implements Serializable {
-	private static final long serialVersionUID = 1L;
 	transient Group g, blockGroup, wallGroup, tokenGroup, buttonGroup;
 	transient public Scene gameScene;
+
+	private static final long serialVersionUID = 1L;
 	private Snake s;
-//	private LinkedList<Wall> wallList;
 	private LinkedList<Block> blockList;
+
+//	private LinkedList<Wall> wallList;
 //	private LinkedList<Token> tokenList;
+
 	Game parentGame;
 	double prevFrameTime = 0;
 	double fps = 0;
-	private int score;
-	private boolean gamePaused;
+	
+	int score;
+	
+	boolean gamePaused, gameOver;
+	
 	double framesElapsed = -3;
 	double moveSnakeSpeed = 10;
 	double gameScreenSpeed = 3;
@@ -40,6 +46,8 @@ public class GameState implements Serializable {
 	int windowCount = 0;
 
 	public GameState(Game parentGame) {
+		gamePaused = false;
+		gameOver = false;
 		this.parentGame = parentGame;
 		s = new Snake(this);
 //		wallList = new LinkedList<>();
@@ -59,6 +67,7 @@ public class GameState implements Serializable {
 //		for(Token t: tokenList) {
 //			//TODO t.deserialize();
 //		}
+		
 		s.deserialize();
 	}
 
@@ -82,14 +91,6 @@ public class GameState implements Serializable {
 
 	}
 
-	public int getScore() {
-		return score;
-	}
-
-	public void setScore(int score) {
-		this.score = score;
-	}
-	
 	public void importSerializedBlocks() {
 		for(Block b : blockList) {
 			blockGroup.getChildren().add(b.bt);
@@ -249,7 +250,7 @@ public class GameState implements Serializable {
 	public boolean blockSpawnWindow() {
 		if (framesElapsed > blockCount * 200) {
 			blockCount++;
-			System.out.println("Block Spawn Window: " + framesElapsed);
+//			System.out.println	("Block Spawn Window: " + framesElapsed);
 			return true;
 		} else {
 			return false;
