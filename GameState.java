@@ -22,11 +22,11 @@ import javafx.stage.Stage;
 
 public class GameState implements Serializable {
 	private static final long serialVersionUID = 1L;
-	Group g, blockGroup, wallGroup, tokenGroup, buttonGroup;
+	transient Group g, blockGroup, wallGroup, tokenGroup, buttonGroup;
 	private Snake s;
-	private LinkedList<Wall> wallList;
+//	private LinkedList<Wall> wallList;
 	private LinkedList<Block> blockList;
-	private LinkedList<Token> tokenList;
+//	private LinkedList<Token> tokenList;
 	double prevFrameTime = 0;
 	double fps = 0;
 	public Scene gameScene;
@@ -40,11 +40,23 @@ public class GameState implements Serializable {
 
 	public GameState() {
 		s = new Snake(this);
-		wallList = new LinkedList<>();
+//		wallList = new LinkedList<>();
 		blockList = new LinkedList<>();
-		tokenList = new LinkedList<>();
+//		tokenList = new LinkedList<>();
 		score = 0;
 		gamePaused = false;
+	}
+	
+	public void deserialize() {
+//		for(Wall w: wallList) {
+//			// TODO w.deserialize();
+//		}
+		for(Block b : blockList) {
+			b.deserialize();
+		}
+//		for(Token t: tokenList) {
+//			//TODO t.deserialize();
+//		}
 	}
 
 	public Snake getS() {
@@ -55,39 +67,8 @@ public class GameState implements Serializable {
 		this.s = s;
 	}
 
-	public LinkedList<Wall> getWallList() {
-		return wallList;
-	}
-
-	public void setWallList(LinkedList<Wall> wallList) {
-		this.wallList = wallList;
-	}
-
-	public LinkedList<Token> getTokenList() {
-		return tokenList;
-	}
-
-	public void setTokenList(LinkedList<Token> tokenList) {
-		this.tokenList = tokenList;
-	}
-
-	public void addWall(Wall w) {
-		wallList.add(w);
-	}
-
 	public void addBlock(Block b) {
 		blockList.add(b);
-	}
-
-	public void addToken(Token t) {
-		tokenList.add(t);
-	}
-
-	public void removeWall(Wall w) {
-		try {
-			wallList.remove(w);
-		} catch (Exception e) {
-		}
 	}
 
 	public void removeBlock(Block b) {
@@ -96,13 +77,6 @@ public class GameState implements Serializable {
 		} catch (Exception e) {
 		}
 
-	}
-
-	public void removeToken(Token t) {
-		try {
-			tokenList.remove(t);
-		} catch (Exception e) {
-		}
 	}
 
 	public int getScore() {
@@ -138,14 +112,7 @@ public class GameState implements Serializable {
 
 				}
 
-				updateBlockLocation();
-				deleteDeadBlocks();
-
-//				updateTokenLocation();
-//				deleteDeadTokens();
-
-//				updateWallLocation();
-//				deleteDealWalls();
+				updateOnScreenElements();
 
 				s.updateNodes();
 			}
@@ -159,6 +126,7 @@ public class GameState implements Serializable {
 
 		gameScene.setOnKeyPressed(e -> {
 			double keyBoardX = s.getSnakeNodes().get(0).getCenterX();
+			// TODO change snake movement to speed model instead
 			if (e.getCode() == KeyCode.LEFT) {
 				keyBoardX = s.getSnakeNodes().get(0).getCenterX() - moveSnakeSpeed;
 			} else if (e.getCode() == KeyCode.RIGHT) {
@@ -183,6 +151,19 @@ public class GameState implements Serializable {
 		primaryStage.setScene(gameScene);
 	}
 
+	protected void updateOnScreenElements() {
+		// TODO Auto-generated method stub
+		updateBlockLocation();
+		deleteDeadBlocks();
+
+//		updateTokenLocation();
+//		deleteDeadTokens();
+
+//		updateWallLocation();
+//		deleteDealWalls();
+
+	}
+
 	private void changeGameSpeed(double d) {
 		if (d <= 0) {
 			gameScreenSpeed = 0;
@@ -196,10 +177,6 @@ public class GameState implements Serializable {
 			System.out.println("current gameSpeed: " + gameScreenSpeed);
 			System.out.println();
 		}
-	}
-
-	protected boolean tokenSpawnWindow() {
-		return false;
 	}
 
 	protected void deleteDeadBlocks() {
@@ -216,7 +193,7 @@ public class GameState implements Serializable {
 	protected void updateBlockLocation() {
 		for (int i = 0; i < blockList.size(); i++) {
 			Block temp = blockList.get(i);
-			temp.setPositionY((temp.positionY + gameScreenSpeed));
+			temp.moveForward((gameScreenSpeed));
 		}
 	}
 
@@ -266,7 +243,6 @@ public class GameState implements Serializable {
 
 		for (int i : blockLoc) {
 			Block newBlock = new Block(i);
-//			newBlock.setBlockColor(c);
 			blockList.add(newBlock);
 			blockGroup.getChildren().add(newBlock.bt);
 		}

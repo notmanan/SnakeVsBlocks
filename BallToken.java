@@ -15,6 +15,8 @@ public class BallToken extends Token implements Serializable{
 	private int frequency = 4;
 	transient Image picture;
 	
+	
+	
 	public int getFrequency() {
 		return frequency;
 	}

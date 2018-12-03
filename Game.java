@@ -17,25 +17,23 @@ public class Game extends Application implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private GameState gs;
 	private boolean gamePaused = false;
-	private int speed;
 	private LinkedList<RankingPosition> Leaderboard;
-	public Scene mainScene, leaderBoardScene;
-	public Button playbtn, resumeBtn, leaderboardBtn;
+	transient public Scene mainScene, leaderBoardScene;
+	transient public Button playbtn, resumeBtn, leaderboardBtn;
 
 	public Game() {
 		gs = new GameState();
-		speed = 0;
+		
 		Leaderboard = new LinkedList<>();
-
-		addToLeaderBoard(new RankingPosition("Dummies", 0));
-		addToLeaderBoard(new RankingPosition("Dummies", 0));
-		addToLeaderBoard(new RankingPosition("Dummies", 0));
-		addToLeaderBoard(new RankingPosition("Dummies", 0));
-		addToLeaderBoard(new RankingPosition("Dummies", 0));
-		addToLeaderBoard(new RankingPosition("Dummies", 0));
-		addToLeaderBoard(new RankingPosition("Dummies", 0));
-		addToLeaderBoard(new	 RankingPosition("Dummies", 0));
-		addToLeaderBoard(new RankingPosition("Dummies", 0));
+		addToLeaderBoard(new RankingPosition("Dummies", 10));
+		addToLeaderBoard(new RankingPosition("Dummies", 20));
+		addToLeaderBoard(new RankingPosition("Dummies", 30));
+		addToLeaderBoard(new RankingPosition("Dummies", 40));
+		addToLeaderBoard(new RankingPosition("Dummies", 50));
+		addToLeaderBoard(new RankingPosition("Dummies", 60));
+		addToLeaderBoard(new RankingPosition("Dummies", 70));
+		addToLeaderBoard(new RankingPosition("Dummies", 80));
+		addToLeaderBoard(new RankingPosition("Dummies", 90));
 		addToLeaderBoard(new RankingPosition("Dummies", 0));
 	}
 
@@ -53,14 +51,6 @@ public class Game extends Application implements Serializable {
 
 	public void setGs(GameState gs) {
 		this.gs = gs;
-	}
-
-	public int getSpeed() {
-		return speed;
-	}
-
-	public void setSpeed(int speed) {
-		this.speed = speed;
 	}
 
 	public LinkedList<RankingPosition> getLeaderboard() {

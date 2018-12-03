@@ -13,17 +13,16 @@ public class Snake {
 	private double positionX; // assign center screen horizontally
 	private double positionY; // assign apprporiate value here
 	private int snakelength = 25;
-	private LinkedList<Circle> snakeNodes;
+	transient private LinkedList<Circle> snakeNodes;
 	private double snakeRadius = 15;
 	private GameState gs;
-	Label t;
-	StackPane st;
+	transient Label t;
+	transient StackPane st;
 
 	public Snake(GameState gs2) {
 		st = new StackPane();
 		t = new Label(""+snakelength);
-		t.setTextFill(Color.BLACK);
-
+		t.setTextFill(Color.BLACK);	
 		//		t. change text size
 		t.prefWidth(10);
 		gs = gs2;
@@ -35,7 +34,19 @@ public class Snake {
 		}
 		snakeNodes.getFirst().setFill(Color.RED);
 		st.getChildren().addAll(snakeNodes.getFirst() , t);	
-		
+	}
+	
+	public void deserialize() {
+		st = new StackPane();
+		t = new Label(""+snakelength);
+		t.setTextFill(Color.BLACK);
+		t.prefWidth(10);
+		setSnakeNodes(new LinkedList<>());
+		for (int i = 0; i < snakelength; i++) {
+			snakeNodes.add(new Circle(positionX, positionY + (i * (snakeRadius + snakeRadius)), snakeRadius));
+		}
+		snakeNodes.getFirst().setFill(Color.RED);
+		st.getChildren().addAll(snakeNodes.getFirst() , t);	
 	}
 
 	public double getPositionX() {
@@ -55,7 +66,7 @@ public class Snake {
 	}
 
 	public double findProposedX(double propx) {
-		// if propX works:
+		// TODO if propX works:
 		return propx;
 		// if it doesn't work, find appropriate propX;
 		// return newX
@@ -112,18 +123,5 @@ public class Snake {
 				currCircle.setCenterY(topCircle.getCenterY() + currCircle.getRadius() * 2);
 			}
 		}
-	}
-	
-	
-	public void collisionWithWall(Wall w) {
-	}
-	
-	public void collisionWithBlock(Block b) {
-	}
-	
-	public void increaseLength(int amt) {
-	}
-	
-	public void usePower(Token token) {
 	}
 }

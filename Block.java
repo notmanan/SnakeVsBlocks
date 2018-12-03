@@ -77,4 +77,21 @@ public class Block implements Serializable {
 		textColor = c;
 		t.setFill(c);
 	}
+	
+	public void deserialize() {
+			t = new Text("" + (blockVal));
+			t.setFill(textColor);
+			b = new Rectangle(positionX, positionY, 97, 97);
+			b.setArcHeight(15.0d);
+			b.setArcWidth(15.0d);
+			b.setFill(findColor(blockVal));
+			bt = new StackPane();
+			bt.setTranslateX(positionX);
+			bt.setTranslateY(positionY);
+			bt.getChildren().addAll(b, t);
+	}
+
+	public void moveForward(double gameSpeed) {
+		setPositionY(gameSpeed + positionY);
+	}
 }
