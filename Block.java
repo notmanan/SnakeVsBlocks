@@ -76,9 +76,7 @@ public class Block implements Serializable {
 
 	public void deserialize() {
 		t = new Text("" + (blockVal));
-		System.out.println(t.getText());
 		t.setFill(Color.WHITE);
-		System.out.println(t.getFill());
 		b = new Rectangle(positionX, positionY, 97, 97);
 		b.setArcHeight(15.0d);
 		b.setArcWidth(15.0d);

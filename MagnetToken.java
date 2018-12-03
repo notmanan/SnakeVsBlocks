@@ -3,24 +3,32 @@ package SnakeVsBlocks;
 import java.io.Serializable;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class MagnetToken extends Token implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private int frequency = 1;
-	private Image picture;
-	public int getFrequency() {
-		return frequency;
+	transient Image picture = new Image("/SnakeVsBlocks/Assets/shield.gif");
+	
+	public MagnetToken() {
+		super();
+		obj = new ImageView();
+		obj.setImage(picture);
+		obj.setFitHeight(tokenSize);
+		obj.setFitWidth(tokenSize);
+		obj.setX(positionX);
+		obj.setY(positionY);
 	}
-	public void setFrequency(int frequency) {
-		this.frequency = frequency;
-	}
-	public Image getPicture() {
-		return picture;
-	}
-	public void setPicture(Image picture) {
-		this.picture = picture;
+	
+	public void deserialize() {
+		obj = new ImageView();
+		picture = new Image("/SnakeVsBlocks/Assets/shield.gif");
+		obj.setImage(picture);
+		obj.setFitHeight(tokenSize);
+		obj.setFitWidth(tokenSize);
+		obj.setX(positionX);
+		obj.setY(positionY);
 	}
 }

@@ -27,7 +27,7 @@ public class Snake implements Serializable{
 	public Snake(GameState gs2) {
 		st = new StackPane();
 		t = new Label(""+snakelength);
-		t.setTextFill(Color.BLACK);	
+		t.setTextFill(Color.WHITE);	
 		//		t. change text size
 		t.prefWidth(10);
 		gs = gs2;
@@ -36,6 +36,7 @@ public class Snake implements Serializable{
 		setSnakeNodes(new LinkedList<>());
 		for (int i = 0; i < snakelength; i++) {
 			snakeNodes.add(new Circle(positionX, positionY + (i * (snakeRadius + snakeRadius)), snakeRadius));
+			snakeNodes.getLast().setFill(Color.WHITE);
 		}
 		snakeNodes.getFirst().setFill(Color.RED);
 		st.getChildren().addAll(snakeNodes.getFirst() , t);	
@@ -44,7 +45,7 @@ public class Snake implements Serializable{
 	public void deserialize() {
 		st = new StackPane();
 		t = new Label(""+snakelength);
-		t.setTextFill(Color.BLACK);
+		t.setTextFill(Color.WHITE);
 		t.prefWidth(10);
 		setSnakeNodes(new LinkedList<>());
 		for (int i = 0; i < snakelength; i++) {

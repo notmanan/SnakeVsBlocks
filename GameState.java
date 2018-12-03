@@ -17,6 +17,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class GameState implements Serializable {
@@ -25,10 +26,9 @@ public class GameState implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Snake s;
-	private LinkedList<Block> blockList;
-
-	private LinkedList<Wall> wallList;
-//	private LinkedList<Token> tokenList;
+	LinkedList<Block> blockList;
+	LinkedList<Wall> wallList;
+	LinkedList<Token> tokenList;
 
 	Game parentGame;
 	double prevFrameTime = 0;
@@ -49,24 +49,39 @@ public class GameState implements Serializable {
 		gameOver = false;
 		this.parentGame = parentGame;
 		s = new Snake(this);
+		System.out.println("done this");
+		System.out.println("done this");
+		System.out.println("done this");
+		System.out.println("done this");
+		System.out.println("done this");
 		wallList = new LinkedList<>();
 		blockList = new LinkedList<>();
-//		tokenList = new LinkedList<>();
+		tokenList = new LinkedList<>();
 		score = 0;
 		gamePaused = false;
 	}
 
 	public void deserialize() {
-		for(Wall w: wallList) {
-			 w.deserialize();
+		for (Wall w : wallList) {
+			w.deserialize();
 		}
 		for (Block b : blockList) {
 			b.deserialize();
 		}
-//		for(Token t: tokenList) {
-//			//TODO t.deserialize();
-//		}
 
+		for (Token t : tokenList) {
+			if (t instanceof BallToken) {
+				((BallToken) t).deserialize();
+			} else if (t instanceof DestroyToken) {
+				((DestroyToken) t).deserialize();
+			} else if (t instanceof ShieldToken) {
+				((ShieldToken) t).deserialize();
+			} else if (t instanceof MagnetToken) {
+				((MagnetToken) t).deserialize();
+			} else {
+				System.out.println("wat 2000");
+			}
+		}
 		s.deserialize();
 	}
 
@@ -90,53 +105,60 @@ public class GameState implements Serializable {
 
 	}
 
-	public void importSerializedBlocks() {
+	private void importSerializedBlocks() {
 		for (Block b : blockList) {
 			blockGroup.getChildren().add(b.bt);
 		}
 	}
 
 	private void importSerializedWalls() {
-		for(Wall w :  wallList) {
+		for (Wall w : wallList) {
 			wallGroup.getChildren().add(w.wall);
 		}
 	}
+	
+	private void importSerializedTokens() {
+		for (Token t : tokenList) {
+			blockGroup.getChildren().add(t.obj);
+		}
+	}
+
+
 	public void begin(Stage primaryStage) {
 		System.out.println("New Game begun");
 		g = new Group();
 		blockGroup = new Group();
-		wallGroup =  new Group();
+		wallGroup = new Group();
+		tokenGroup = new Group();
 
 		importSerializedBlocks();
 		importSerializedWalls();
 		// TODO
-//		importSerializedTokens();
-		
-		g.getChildren().addAll(blockGroup, wallGroup);
-		AnimationTimer timer = new AnimationTimer() {
+		importSerializedTokens();
 
+		g.getChildren().addAll(blockGroup, wallGroup, tokenGroup);
+
+		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
 				fps = getFramesPerSecond(now);
 				framesElapsed += gameScreenSpeed;
 				if (spawnWindow()) {
-					System.out.println("Window Found : " + framesElapsed);
+//					System.out.println("Window Found : " + framesElapsed);
 					Random rand = new Random();
 					int ch = rand.nextInt(80);
-					if(ch>60) {
-						spawnWall();						
+					if (ch > 60) {
+						spawnWall();
 					}
 					boolean allowBlock = blockSpawnWindow();
 					if (allowBlock) {
 						spawnBlocks(6);
 					}
 					if (!allowBlock) {
-						System.out.println("Token Spawn Window: " + framesElapsed);
-//						spawnBlocks(1, Color.RED);
+//						System.out.println("Token Spawn Window: " + framesElapsed);
+						spawnToken();
 					}
-
 				}
-
 				updateOnScreenElements();
 
 				s.updateNodes();
@@ -148,6 +170,7 @@ public class GameState implements Serializable {
 		g.getChildren().addAll(s.getSnakeNodes());
 
 		gameScene = new Scene(g, 603, 903);
+		gameScene.setFill(Color.BLACK);
 
 		gameScene.setOnKeyPressed(e -> {
 			double keyBoardX = s.getSnakeNodes().get(0).getCenterX();
@@ -180,18 +203,69 @@ public class GameState implements Serializable {
 		primaryStage.setScene(gameScene);
 	}
 
+	protected void spawnToken() {
+		// TODO Auto-generated method stub
+		Random rand = new Random();
+		int tokenSpawnner = rand.nextInt(1000);
+		if (tokenSpawnner < 400) {
+			System.out.println("spawn no token");
+		} else if (tokenSpawnner < 700) {
+			spawnBallToken();
+		} else if (tokenSpawnner < 800) {
+			spawnDestroyBlockToken();
+		} else if (tokenSpawnner < 900) {
+			spawnMagnetToken();
+		} else {
+			spawnShieldToken();
+		}
+	}
+
+	private void spawnShieldToken() {
+		// TODO Auto-generated method stub
+		System.out.println("spawn shield token");
+	}
+
+	private void spawnMagnetToken() {
+		// TODO Auto-generated method stub
+		System.out.println("spawn magnet");
+		MagnetToken temp = new MagnetToken();
+		tokenList.add(temp);
+		tokenGroup.getChildren().add(tokenList.getLast().obj);
+	}
+
+	private void spawnDestroyBlockToken() {
+		// TODO Auto-generated method stub
+		System.out.println("spawn destroy block");
+		DestroyToken temp = new DestroyToken();
+		tokenList.add(temp);
+		tokenGroup.getChildren().add(tokenList.getLast().obj);
+	}
+
+	private void spawnBallToken() {
+		// TODO Auto-generated method stub
+		System.out.println("spawn ball token");
+		BallToken temp = new BallToken();
+		tokenList.add(temp);
+		tokenGroup.getChildren().add(tokenList.getLast().obj);
+	}
 
 	protected void updateOnScreenElements() {
-		// TODO Auto-generated method stub
 		updateBlockLocation();
 		deleteDeadBlocks();
 
-//		updateTokenLocation();
+		updateTokenLocation();
 //		deleteDeadTokens();
 
 		updateWallLocation();
 		deleteDeadWalls();
 
+	}
+
+	private void updateTokenLocation() {
+		// TODO Auto-generated method stub
+		for (Token t : tokenList) {
+			t.moveForward(gameScreenSpeed);
+		}
 	}
 
 	protected void updateBlockLocation() {
@@ -251,7 +325,7 @@ public class GameState implements Serializable {
 		int blockSpawnCount = 0;
 		if (n <= 20) {
 			blockSpawnCount = (n / 3) > maxBlocks ? maxBlocks : (n / 3);
-			System.out.println("blocks: " + blockSpawnCount);
+//			System.out.println("blocks: " + blockSpawnCount);
 		}
 		LinkedList<Integer> blockLoc = new LinkedList<>();
 
@@ -269,7 +343,7 @@ public class GameState implements Serializable {
 			blockGroup.getChildren().add(newBlock.bt);
 		}
 	}
-	
+
 	public void spawnWall() {
 		Wall w = new Wall();
 		wallList.add(w);
