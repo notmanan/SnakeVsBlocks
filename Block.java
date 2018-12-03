@@ -28,12 +28,13 @@ public class Block implements Serializable {
 	transient Text t;
 
 	public Block(int n) {
+		// update 50 to accomodate for max size of snake
 		blockVal = rand.nextInt(50) + 1;
 		t = new Text("" + (blockVal));
 		t.setFill(Color.WHITE);
 		positionX = n * 100 + 3;
 		positionY = -97;
-		b = new Rectangle(positionX, positionY, 97, 97);
+		b = new Rectangle(positionX, positionY, size, size);
 		b.setArcHeight(15.0d);
 		b.setArcWidth(15.0d);
 		b.setFill(findColor(blockVal));
