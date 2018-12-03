@@ -12,7 +12,7 @@ public class Wall implements Serializable{
 	double positionX; 
 	double positionY;
 	transient Rectangle wall;
-	Color wallColor;
+	transient Color wallColor;
 	
 	public Wall() {
 		Random rand = new Random();

@@ -23,13 +23,14 @@ import javafx.stage.Stage;
 public class GameState implements Serializable {
 	private static final long serialVersionUID = 1L;
 	transient Group g, blockGroup, wallGroup, tokenGroup, buttonGroup;
+	transient public Scene gameScene;
 	private Snake s;
 //	private LinkedList<Wall> wallList;
 	private LinkedList<Block> blockList;
 //	private LinkedList<Token> tokenList;
+	Game parentGame;
 	double prevFrameTime = 0;
 	double fps = 0;
-	public Scene gameScene;
 	private int score;
 	private boolean gamePaused;
 	double framesElapsed = -3;
@@ -38,7 +39,8 @@ public class GameState implements Serializable {
 	int blockCount = 0;
 	int windowCount = 0;
 
-	public GameState() {
+	public GameState(Game parentGame) {
+		this.parentGame = parentGame;
 		s = new Snake(this);
 //		wallList = new LinkedList<>();
 		blockList = new LinkedList<>();
@@ -57,6 +59,7 @@ public class GameState implements Serializable {
 //		for(Token t: tokenList) {
 //			//TODO t.deserialize();
 //		}
+		s.deserialize();
 	}
 
 	public Snake getS() {
@@ -86,11 +89,19 @@ public class GameState implements Serializable {
 	public void setScore(int score) {
 		this.score = score;
 	}
+	
+	public void importSerializedBlocks() {
+		for(Block b : blockList) {
+			blockGroup.getChildren().add(b.bt);
+		}		
+	}
 
 	public void begin(Stage primaryStage) {
 		System.out.println("New Game begun");
 		g = new Group();
 		blockGroup = new Group();
+		
+		importSerializedBlocks();
 
 		g.getChildren().add(blockGroup);
 		AnimationTimer timer = new AnimationTimer() {
@@ -107,7 +118,7 @@ public class GameState implements Serializable {
 					}
 					if (!allowBlock) {
 						System.out.println("Token Spawn Window: " + framesElapsed);
-						spawnBlocks(1, Color.RED);
+//						spawnBlocks(1, Color.RED);
 					}
 
 				}
@@ -137,8 +148,12 @@ public class GameState implements Serializable {
 			} else if (e.getCode() == KeyCode.DOWN) {
 				System.out.println("DOWN");
 				changeGameSpeed(gameScreenSpeed - 1);
-			} else {
-				return;
+			} else if(e.getCode() == KeyCode.S){
+				System.out.println("attempting serialization");
+				parentGame.serialize();
+			} else if(e.getCode() == KeyCode.D){
+				System.out.println("attempting deserialization");
+				parentGame.deserialize();
 			}
 			s.setPositionX(keyBoardX);
 		});
@@ -194,32 +209,6 @@ public class GameState implements Serializable {
 		for (int i = 0; i < blockList.size(); i++) {
 			Block temp = blockList.get(i);
 			temp.moveForward((gameScreenSpeed));
-		}
-	}
-
-	protected void spawnBlocks(int maxBlocks, Color c) {
-		Random rand = new Random();
-		int n = rand.nextInt(20);
-		int blockSpawnCount = 0;
-		if (n <= 20) {
-			blockSpawnCount = (n / 3) > maxBlocks ? maxBlocks : (n / 3);
-			System.out.println("blocks: " + blockSpawnCount);
-		}
-		LinkedList<Integer> blockLoc = new LinkedList<>();
-
-		while (blockSpawnCount != 0) {
-			int nnn = rand.nextInt(6) + 0;
-			if (!blockLoc.contains(nnn)) {
-				blockLoc.add(nnn);
-				blockSpawnCount--;
-			}
-		}
-
-		for (int i : blockLoc) {
-			Block newBlock = new Block(i);
-			newBlock.setBlockColor(c);
-			blockList.add(newBlock);
-			blockGroup.getChildren().add(newBlock.bt);
 		}
 	}
 	

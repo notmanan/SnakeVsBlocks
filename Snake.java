@@ -1,5 +1,6 @@
 package SnakeVsBlocks;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import javafx.scene.control.Label;
@@ -9,7 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 //import javafx.scene.text.Text;
 
-public class Snake {
+public class Snake implements Serializable{
 	private double positionX; // assign center screen horizontally
 	private double positionY; // assign apprporiate value here
 	private int snakelength = 25;

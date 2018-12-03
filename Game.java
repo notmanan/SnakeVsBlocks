@@ -1,5 +1,10 @@
 package SnakeVsBlocks;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -15,15 +20,17 @@ import javafx.stage.Stage;
 
 public class Game extends Application implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private GameState gs;
-	private boolean gamePaused = false;
-	private LinkedList<RankingPosition> Leaderboard;
+	GameState gs;
+	LinkedList<RankingPosition> Leaderboard;
 	transient public Scene mainScene, leaderBoardScene;
 	transient public Button playbtn, resumeBtn, leaderboardBtn;
+	String filename = "myGameinfo.txt";
+	transient Stage primaryStage;
+	static String[] args;
 
 	public Game() {
-		gs = new GameState();
-		
+		gs = new GameState(this);
+
 		Leaderboard = new LinkedList<>();
 		addToLeaderBoard(new RankingPosition("Dummies", 10));
 		addToLeaderBoard(new RankingPosition("Dummies", 20));
@@ -35,14 +42,6 @@ public class Game extends Application implements Serializable {
 		addToLeaderBoard(new RankingPosition("Dummies", 80));
 		addToLeaderBoard(new RankingPosition("Dummies", 90));
 		addToLeaderBoard(new RankingPosition("Dummies", 0));
-	}
-
-	public boolean isGamePaused() {
-		return gamePaused;
-	}
-
-	public void setGamePaused(boolean gamePaused) {
-		this.gamePaused = gamePaused;
 	}
 
 	public GameState getGs() {
@@ -127,11 +126,14 @@ public class Game extends Application implements Serializable {
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] argss) {
+		args = argss;
 		launch(args);
 	}
 
 	public void start(Stage primaryStage) {
+		deserialize();
+		this.primaryStage = primaryStage;
 		Pane p = new Pane();
 		mainScene = new Scene(p, 603, 903);
 		primaryStage.setScene(mainScene);
@@ -188,12 +190,73 @@ public class Game extends Application implements Serializable {
 	}
 
 	public void mainPage(Stage primaryStage) {
-		// TODO Auto-generated method stub
-		// Display Main Page : Start and Leaderboard. Optional Resume game if the game
+		// TODO Display Main Page : Start and Leaderboard. Optional Resume game if the
+		// game
 		// was paused the last time.
 		// Options : sound, themes, colors, CONTROLS
 		primaryStage.setScene(mainScene);
 		resumeBtn.setVisible(gs.getGamePaused());
 //		primaryStage.show();
 	}
+
+	public void serialize() {
+		// TODO Auto-generated method stub
+		try {
+			// Saving of object in a file
+			FileOutputStream file = new FileOutputStream(filename);
+			ObjectOutputStream out = new ObjectOutputStream(file);
+			
+			// Method for serialization of object
+			out.writeObject(this);
+			out.close();
+			file.close();
+
+			System.out.println("Object has been serialized");
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+//
+//		catch (IOException ex) {
+//			System.out.println("IOException is caught");
+//		}
+	}
+
+	public void deserialize() {
+		try {
+			// Reading the object from a file
+			FileInputStream file = new FileInputStream(filename);
+			ObjectInputStream in = new ObjectInputStream(file);
+
+			// Method for deserialization of object
+			Game deserialized = (Game) in.readObject();
+			completeDeserialization(deserialized);
+			in.close();
+			file.close();
+			
+			
+			
+			System.out.println("Object has been deserialized ");
+		}
+
+		catch (IOException ex) {
+			System.out.println("IOException is caught");
+		}
+
+		catch (ClassNotFoundException ex) {
+			System.out.println("ClassNotFoundException is caught");
+		}
+	}
+
+	private void completeDeserialization(Game deserialized) {
+		// TODO Auto-generated method stub
+		this.gs = deserialized.gs;
+		Leaderboard = deserialized.Leaderboard;
+		filename = deserialized.filename;
+		gs.deserialize();
+//		transient public Scene mainScene, leaderBoardScene;
+//		transient public Button playbtn, resumeBtn, leaderboardBtn;
+
+	}
+
 }

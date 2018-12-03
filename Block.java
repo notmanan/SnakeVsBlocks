@@ -19,7 +19,7 @@ public class Block implements Serializable {
 	double positionX;
 	double positionY;
 	double size = 97;
-	Color blockColor, textColor;
+	transient Color blockColor;
 	int blockVal;
 	Boolean blockAlive = true;
 	Random rand = new Random();
@@ -73,22 +73,19 @@ public class Block implements Serializable {
 		b.setFill(c);
 	}
 
-	public void setTextColor(Color c) {
-		textColor = c;
-		t.setFill(c);
-	}
-	
 	public void deserialize() {
-			t = new Text("" + (blockVal));
-			t.setFill(textColor);
-			b = new Rectangle(positionX, positionY, 97, 97);
-			b.setArcHeight(15.0d);
-			b.setArcWidth(15.0d);
-			b.setFill(findColor(blockVal));
-			bt = new StackPane();
-			bt.setTranslateX(positionX);
-			bt.setTranslateY(positionY);
-			bt.getChildren().addAll(b, t);
+		t = new Text("" + (blockVal));
+		System.out.println(t.getText());
+		t.setFill(Color.WHITE);
+		System.out.println(t.getFill());
+		b = new Rectangle(positionX, positionY, 97, 97);
+		b.setArcHeight(15.0d);
+		b.setArcWidth(15.0d);
+		b.setFill(findColor(blockVal));
+		bt = new StackPane();
+		bt.setTranslateX(positionX);
+		bt.setTranslateY(positionY);
+		bt.getChildren().addAll(b, t);
 	}
 
 	public void moveForward(double gameSpeed) {
