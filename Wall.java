@@ -18,7 +18,7 @@ public class Wall implements Serializable {
 	double wallSize;
 	boolean wallAlive;
 	transient Rectangle wall;
-	transient Color wallColor = Color.RED;
+	transient Color wallColor;
 
 	public Wall() {
 		Random rand = new Random();
@@ -28,9 +28,7 @@ public class Wall implements Serializable {
 		int size = rand.nextInt(3) + 1;
 
 		double yAxis = -300; // TODO remove later, temporary to see where the wall lands
-
 		wall = new Rectangle(i * 100 + 100, yAxis, 3, size * 100);
-
 		wallColor = Color.RED;
 
 		wall.setFill(wallColor);

@@ -1,8 +1,14 @@
 package SnakeVsBlocks;
 
+import java.io.Serializable;
+
 import javafx.scene.image.Image;
 
-public class MagnetToken extends Token {
+public class MagnetToken extends Token implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int frequency = 1;
 	private Image picture;
 	public int getFrequency() {
