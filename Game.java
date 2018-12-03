@@ -34,7 +34,7 @@ public class Game extends Application implements Serializable {
 		addToLeaderBoard(new RankingPosition("Dummies", 0));
 		addToLeaderBoard(new RankingPosition("Dummies", 0));
 		addToLeaderBoard(new RankingPosition("Dummies", 0));
-		addToLeaderBoard(new RankingPosition("Dummies", 0));
+		addToLeaderBoard(new	 RankingPosition("Dummies", 0));
 		addToLeaderBoard(new RankingPosition("Dummies", 0));
 		addToLeaderBoard(new RankingPosition("Dummies", 0));
 	}
@@ -74,10 +74,11 @@ public class Game extends Application implements Serializable {
 	public void addToLeaderBoard(RankingPosition rp) {
 		Leaderboard.add(rp);
 		Collections.sort(Leaderboard);
-	} 
+	}
 
 	public void leaderBoardPage(Stage primaryStage) {
-		// TODO works in terms of functionality, fix looks, implement better ways of doing the same thing
+		// TODO works in terms of functionality, fix looks, implement better ways of
+		// doing the same thing
 		Label leaderLabel = new Label();
 		leaderLabel.setText("Leaderboard");
 
@@ -137,7 +138,6 @@ public class Game extends Application implements Serializable {
 	}
 
 	public static void main(String[] args) {
-		// settings -> sounds and animation styles
 		launch(args);
 	}
 
@@ -145,7 +145,6 @@ public class Game extends Application implements Serializable {
 		Pane p = new Pane();
 		mainScene = new Scene(p, 603, 903);
 		primaryStage.setScene(mainScene);
-
 		playbtn = new Button("Play Game");
 		playbtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override

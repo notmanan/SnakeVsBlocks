@@ -1,8 +1,15 @@
 package SnakeVsBlocks;
 
-public class Token {
+import java.io.Serializable;
+
+public class Token implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int positionX; 
 	private int positionY;
+	
 	public int getPositionX() {
 		return positionX;
 	}

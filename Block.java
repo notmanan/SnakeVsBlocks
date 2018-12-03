@@ -5,22 +5,27 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
+import java.io.Serializable;
 import java.util.Random;
 
 //Rectangle block = new Rectangle( i*100 + 3, yAxis, height, width);block.setArcHeight(15.0d); block.setArcWidth(15.0d);
 
-public class Block {
+public class Block implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	int BlockId;
 	double positionX;
 	double positionY;
 	double size = 97;
-	String color;
+	Color blockColor, textColor;
 	int blockVal;
 	Boolean blockAlive = true;
 	Random rand = new Random();
-	StackPane bt;
-	Rectangle b;
-	Text t;
+	transient StackPane bt;
+	transient Rectangle b;
+	transient Text t;
 
 	public Block(int n) {
 		blockVal = rand.nextInt(50) + 1;
@@ -64,11 +69,12 @@ public class Block {
 	}
 
 	public void setBlockColor(Color c) {
-		// TODO Auto-generated method stub
+		blockColor = c;
 		b.setFill(c);
 	}
 
 	public void setTextColor(Color c) {
+		textColor = c;
 		t.setFill(c);
 	}
 }
