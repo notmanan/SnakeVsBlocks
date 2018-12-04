@@ -119,7 +119,7 @@ public class Block implements Serializable {
 
 	public void burst() {
 		// TODO add scoring system and animation
-		System.out.println("burst");
+//		System.out.println("burst");
 		blockAlive = false;
 	}
 }

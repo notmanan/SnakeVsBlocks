@@ -24,7 +24,7 @@ public class Wall implements Serializable {
 		Random rand = new Random();
 		wallAlive = true;
 		int i = rand.nextInt(5);
-		System.out.println("wall position : " + i);
+//		System.out.println("wall position : " + i);
 		int size = rand.nextInt(3) + 1;
 
 		double yAxis = -300; // TODO remove later, temporary to see where the wall lands

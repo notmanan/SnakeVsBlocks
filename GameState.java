@@ -279,7 +279,7 @@ public class GameState implements Serializable {
 		boolean collisionFound = false;
 		for (Block b : blockList) {
 			if (isColliding(s.returnHead(), b.bt)) {
-				System.out.println("collision with block: " + b.blockVal);
+//				System.out.println("collision with block: " + b.blockVal);
 				collisionFound = collisionFound || true;
 				// TODO
 				b.handleCollision(s);
@@ -311,7 +311,7 @@ public class GameState implements Serializable {
 		Random rand = new Random();
 		int tokenSpawnner = rand.nextInt(1000);
 		if (tokenSpawnner < 400) {
-			System.out.println("spawn no token");
+//			System.out.println("spawn no token");
 		} else if (tokenSpawnner < 700) {
 			spawnBallToken();
 		} else if (tokenSpawnner < 800) {

@@ -35,7 +35,7 @@ public class Snake implements Serializable{
 		t.prefWidth(10);
 		gs = gs2;
 		positionX = 301;
-		positionY = 600;
+		positionY = 450;
 		idealY = positionY;
 		setSnakeNodes(new LinkedList<>());
 		for (int i = 0; i < snakelength; i++) {
@@ -156,14 +156,17 @@ public class Snake implements Serializable{
 			double bx = topCircle.getCenterX();
 			double by = topCircle.getCenterY();
 			if (!(ax == bx || ay == by)) {
+
+//				System.out.println("aaaaaaaaaaaaaaaaaaa");
 				double d = Math.sqrt(Math.pow(ax - bx, 2) + Math.pow(ay - by, 2));
 				double dt = snakeNodes.get(i).getRadius() * 2;
 				double t = dt / d;
 				double xt = (1 - t) * bx + t * ax;
 				double yt = (1 - t) * by + t * ay;
-				currCircle.setCenterX(xt);
 				currCircle.setCenterY(yt);
+				currCircle.setCenterX(xt);
 			} else {
+//				System.out.println("bbbbbbbbbbbbbbbbbbbb");
 				currCircle.setCenterX(topCircle.getCenterX());
 				currCircle.setCenterY(topCircle.getCenterY() + currCircle.getRadius() * 2);
 			}
@@ -177,6 +180,40 @@ public class Snake implements Serializable{
 				shieldActive = false;
 			}
 		}
+	}
+	
+	public double findProposedX(Circle c, double propx) {
+		// TODO if propX works:
+		double approvedX = c.getCenterX();
+		
+		for(int i = 1 ; i <= 10 ; i ++) {
+			double candidateX = approvedX + i*((propx - approvedX)/10);
+			boolean collision = false;
+			setUnsureX(c, candidateX);
+			for(Wall w : gs.wallList) {
+				if(gs.isColliding(c, w.wall)) {
+					collision = collision || true;
+				}
+			}
+			
+			for(Block b: gs.blockList) {
+				if(gs.isColliding(c, b.bt)) {
+					collision = collision || true;
+				}
+			}
+			if(collision) {
+				return approvedX;
+			}else {
+				approvedX = candidateX;
+			}
+		}
+		return propx;
+		// if it doesn't work, find appropriate propX;
+		// return newX
+	}
+	
+	public void setUnsureX(Circle c, double xxx) {
+		c.setCenterX(xxx);
 	}
 
 	public void reduceLength() {
