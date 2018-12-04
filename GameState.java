@@ -17,7 +17,10 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class GameState implements Serializable {
@@ -36,7 +39,7 @@ public class GameState implements Serializable {
 
 	int score;
 
-	boolean gamePaused, gameOver;
+	boolean arrestGame, gameOver;
 
 	double framesElapsed = -3;
 	double moveSnakeSpeed = 10;
@@ -44,8 +47,11 @@ public class GameState implements Serializable {
 	int blockCount = 0;
 	int windowCount = 0;
 
+	public double returnEffectiveGameSpeed() {
+		return gameScreenSpeed * (arrestGame ? 0 : 1);
+	}
+
 	public GameState(Game parentGame) {
-		gamePaused = false;
 		gameOver = false;
 		this.parentGame = parentGame;
 		s = new Snake(this);
@@ -53,7 +59,7 @@ public class GameState implements Serializable {
 		blockList = new LinkedList<>();
 		tokenList = new LinkedList<>();
 		score = 0;
-		gamePaused = false;
+		arrestGame = false;
 	}
 
 	public void deserialize() {
@@ -136,7 +142,7 @@ public class GameState implements Serializable {
 			@Override
 			public void handle(long now) {
 				fps = getFramesPerSecond(now);
-				framesElapsed += gameScreenSpeed;
+				framesElapsed += returnEffectiveGameSpeed();
 				if (spawnWindow()) {
 //					System.out.println("Window Found : " + framesElapsed);
 					Random rand = new Random();
@@ -155,6 +161,21 @@ public class GameState implements Serializable {
 				}
 				updateOnScreenElements();
 
+				if (checkBlockCollisions() || checkWallCollisions()) {
+					arrestMovement();
+				} else {
+					unarrestMovement();
+				}
+
+				// TODO
+				collectTokens();
+				
+				
+				
+				
+				
+				
+				
 				s.updateNodes();
 			}
 		};
@@ -182,9 +203,8 @@ public class GameState implements Serializable {
 			} else if (e.getCode() == KeyCode.S) {
 				System.out.println("attempting serialization");
 				parentGame.serialize();
-			} else if (e.getCode() == KeyCode.D) {
-				System.out.println("attempting deserialization");
-				parentGame.deserialize();
+			} else if (e.getCode() == KeyCode.I) {
+				s.increaseLength(5);
 			}
 			s.setPositionX(keyBoardX);
 		});
@@ -197,8 +217,48 @@ public class GameState implements Serializable {
 		primaryStage.setScene(gameScene);
 	}
 
-	protected void spawnToken() {
+	protected void collectTokens() {
 		// TODO Auto-generated method stub
+		for(Token t: tokenList) {
+			if(isColliding(s.returnHead(), t.obj) && t.tokenAlive) {
+				t.activateToken(s);
+			}
+		}
+	}
+
+	protected boolean checkBlockCollisions() {
+		boolean collisionFound = false;
+		for (Block b : blockList) {
+			if (isColliding(s.returnHead(), b.bt)) {
+				System.out.println("collision with block: " + b.blockVal);
+				collisionFound = collisionFound || true;
+				// TODO
+				b.handleCollision(s);
+			}
+		}
+		return collisionFound;
+	}
+
+	protected boolean checkWallCollisions() {
+		boolean collisionFound = false;
+		for (Wall w : wallList) {
+			if (isColliding(s.returnHead(), w.wall)) {
+				System.out.println("collision with wall");
+				collisionFound = collisionFound || true;
+			}
+		}
+		return collisionFound;
+	}
+
+	private void unarrestMovement() {
+		arrestGame = false;
+	}
+
+	private void arrestMovement() {
+		arrestGame = true;
+	}
+
+	protected void spawnToken() {
 		Random rand = new Random();
 		int tokenSpawnner = rand.nextInt(1000);
 		if (tokenSpawnner < 400) {
@@ -215,32 +275,28 @@ public class GameState implements Serializable {
 	}
 
 	private void spawnShieldToken() {
-		// TODO Auto-generated method stub
-		System.out.println("spawn shield token");
+//		System.out.println("spawn shield token");
 		ShieldToken temp = new ShieldToken();
 		tokenList.add(temp);
 		tokenGroup.getChildren().add(tokenList.getLast().obj);
 	}
 
 	private void spawnMagnetToken() {
-		// TODO Auto-generated method stub
-		System.out.println("spawn magnet");
+//		System.out.println("spawn magnet");
 		MagnetToken temp = new MagnetToken();
 		tokenList.add(temp);
 		tokenGroup.getChildren().add(tokenList.getLast().obj);
 	}
 
 	private void spawnDestroyBlockToken() {
-		// TODO Auto-generated method stub
-		System.out.println("spawn destroy block");
+//		System.out.println("spawn destroy block");
 		DestroyToken temp = new DestroyToken();
 		tokenList.add(temp);
 		tokenGroup.getChildren().add(tokenList.getLast().obj);
 	}
 
 	private void spawnBallToken() {
-		// TODO Auto-generated method stub
-		System.out.println("spawn ball token");
+//		System.out.println("spawn ball token");
 		BallToken temp = new BallToken();
 		tokenList.add(temp);
 		tokenGroup.getChildren().add(tokenList.getLast().obj);
@@ -257,22 +313,20 @@ public class GameState implements Serializable {
 	}
 
 	private void updateTokenLocation() {
-		// TODO Auto-generated method stub
 		for (Token t : tokenList) {
-			t.moveForward(gameScreenSpeed);
+			t.moveForward(returnEffectiveGameSpeed());
 		}
 	}
 
 	protected void updateBlockLocation() {
 		for (int i = 0; i < blockList.size(); i++) {
-			blockList.get(i).moveForward((gameScreenSpeed));
+			blockList.get(i).moveForward((returnEffectiveGameSpeed()));
 		}
 	}
 
 	private void updateWallLocation() {
-		// TODO Auto-generated method stub
 		for (Wall w : wallList) {
-			w.moveForward(gameScreenSpeed);
+			w.moveForward(returnEffectiveGameSpeed());
 		}
 	}
 
@@ -288,7 +342,6 @@ public class GameState implements Serializable {
 	}
 
 	private void deleteDeadWalls() {
-		// TODO Auto-generated method stub
 		for (int i = 0; i < wallList.size(); i++) {
 			Wall temp = wallList.get(i);
 			if (!temp.checkAlive()) {
@@ -382,19 +435,11 @@ public class GameState implements Serializable {
 		return fps;
 	}
 
-	public void pause() {
-		System.out.println("Game Paused");
+	public boolean isColliding(Circle imageview, StackPane bt) {
+		return imageview.getBoundsInParent().intersects(bt.getBoundsInParent());
 	}
 
-	public void resume() {
-		System.out.println("Game Resumed");
-	}
-
-	public boolean getGamePaused() {
-		return gamePaused;
-	}
-
-	public void setGamePaused(boolean gamePaused) {
-		this.gamePaused = gamePaused;
+	private boolean isColliding(Circle imageview, Rectangle wall) {
+		return imageview.getBoundsInParent().intersects(wall.getBoundsInParent());
 	}
 }

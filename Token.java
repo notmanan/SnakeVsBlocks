@@ -28,6 +28,10 @@ public class Token implements Serializable {
 	}
 
 	public boolean checkAlive() {
+		if(tokenAlive == false) {
+			return false;
+		}
+		
 		if (positionY > 903) {
 			tokenAlive = false;
 		} else {
@@ -43,5 +47,9 @@ public class Token implements Serializable {
 
 	public void moveForward(double offset) {
 		setY(positionY + offset);
+	}
+	
+	public void activateToken(Snake s) {
+		System.out.println("default token activation");
 	}
 }

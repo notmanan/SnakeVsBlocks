@@ -152,7 +152,7 @@ public class Game extends Application implements Serializable {
 			@Override
 			public void handle(ActionEvent arg0) {
 				System.out.println("Hello Resume!");
-				gs.resume();
+//				TODO gs.resume();
 			}
 		});
 		resumeBtn.setTranslateY(100);
@@ -177,8 +177,7 @@ public class Game extends Application implements Serializable {
 		centerOnX(mainScene, resumeBtn);
 		centerOnX(mainScene, leaderboardBtn);
 		mainPage(primaryStage);
-
-		resumeBtn.setVisible(gs.getGamePaused());
+		resumeBtn.setVisible(!gs.gameOver);
 	}
 
 	public void centerOnX(Scene s, Button b) {
@@ -195,8 +194,7 @@ public class Game extends Application implements Serializable {
 		// was paused the last time.
 		// Options : sound, themes, colors, CONTROLS
 		primaryStage.setScene(mainScene);
-		resumeBtn.setVisible(gs.getGamePaused());
-//		primaryStage.show();
+		resumeBtn.setVisible(!gs.gameOver);
 	}
 
 	public void serialize() {
@@ -205,7 +203,7 @@ public class Game extends Application implements Serializable {
 			// Saving of object in a file
 			FileOutputStream file = new FileOutputStream(filename);
 			ObjectOutputStream out = new ObjectOutputStream(file);
-			
+
 			// Method for serialization of object
 			out.writeObject(this);
 			out.close();
@@ -213,7 +211,7 @@ public class Game extends Application implements Serializable {
 
 			System.out.println("Object has been serialized");
 
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 //
@@ -233,9 +231,7 @@ public class Game extends Application implements Serializable {
 			completeDeserialization(deserialized);
 			in.close();
 			file.close();
-			
-			
-			
+
 			System.out.println("Object has been deserialized ");
 		}
 
@@ -256,7 +252,6 @@ public class Game extends Application implements Serializable {
 		gs.deserialize();
 //		transient public Scene mainScene, leaderBoardScene;
 //		transient public Button playbtn, resumeBtn, leaderboardBtn;
-
 	}
 
 }

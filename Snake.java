@@ -15,6 +15,7 @@ public class Snake implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	double idealY;
 	private double positionX; // assign center screen horizontally
 	private double positionY; // assign apprporiate value here
 	private int snakelength = 25;
@@ -33,6 +34,7 @@ public class Snake implements Serializable{
 		gs = gs2;
 		positionX = 301;
 		positionY = 400;
+		idealY = positionY;
 		setSnakeNodes(new LinkedList<>());
 		for (int i = 0; i < snakelength; i++) {
 			snakeNodes.add(new Circle(positionX, positionY + (i * (snakeRadius + snakeRadius)), snakeRadius));
@@ -69,7 +71,8 @@ public class Snake implements Serializable{
 	
 	public void setPositionY(double yyy) {
 		this.positionY = yyy;
-		snakeNodes.getFirst().setCenterX(this.positionY);
+		snakeNodes.getFirst().setCenterY(this.positionY);
+		t.setTranslateY(positionY - 40);
 	}
 
 	public double findProposedX(double propx) {
@@ -80,6 +83,7 @@ public class Snake implements Serializable{
 	}
 
 	public double getPositionY() {
+		positionY = snakeNodes.getFirst().getCenterY();
 		return positionY;
 	}
 
@@ -104,11 +108,18 @@ public class Snake implements Serializable{
 		this.snakeNodes = snakeNodes;
 	}
 
-	public Circle returnHead() throws NoLengthException {
+	public Circle returnHead() {
 		return snakeNodes.getFirst();
 	}
 
 	public void updateNodes() {
+//		public void setPositionY(double yyy) {
+//			this.positionY = yyy;
+//			snakeNodes.getFirst().setCenterX(this.positionY);
+//		}
+
+		setPositionY(getPositionY() + (idealY - positionY)/20);
+		
 		for (int i = 1; i < snakeNodes.size(); i++) {
 			Circle topCircle = snakeNodes.get(i - 1);
 			Circle currCircle = snakeNodes.get(i);
@@ -131,4 +142,34 @@ public class Snake implements Serializable{
 			}
 		}
 	}
+
+	public void reduceLength() {
+		// TODO animate snake death
+		
+		snakelength --;
+		if(snakelength <= 0) {
+			System.out.println("game has ended");
+//			gs.endGame();
+		}
+		
+		t.setText("" + snakelength);
+		
+		gs.g.getChildren().remove(snakeNodes.getFirst());
+		snakeNodes.remove(snakeNodes.getFirst());
+		snakeNodes.getFirst().setFill(Color.RED);
+		
+//		gs.g.getChildren().remove(snakeNodes.getLast());
+//		snakeNodes.remove(snakeNodes.getLast());		
+	}
+	
+	public void increaseLength(int inc) {
+		for (int i = snakelength; i < snakelength+inc; i++) {
+			snakeNodes.add(new Circle(positionX, positionY + (i * (snakeRadius + snakeRadius)), snakeRadius));
+			snakeNodes.getLast().setFill(Color.WHITE);
+			gs.g.getChildren().add(snakeNodes.getLast());
+		}
+		snakelength += inc;
+		t.setText("" + snakelength);
+	}
+	
 }

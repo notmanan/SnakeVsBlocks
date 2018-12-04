@@ -37,4 +37,10 @@ public class MagnetToken extends Token implements Serializable {
 		obj.setTranslateX(positionX);
 		obj.setTranslateY(positionY);
 	}
+	
+	public void activateToken(Snake s) {
+		System.out.println("magnet token activation");
+		tokenAlive = false;
+	}
+
 }

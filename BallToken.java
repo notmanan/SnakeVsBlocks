@@ -52,7 +52,12 @@ public class BallToken extends Token implements Serializable{
 		obj.setTranslateX(positionX);
 		obj.setTranslateY(positionY);
 	}
-
+	
+	public void activateToken(Snake s) {
+		System.out.println("ball token activation");
+		tokenAlive = false;
+		s.increaseLength(value);
+	}
 }
 
 

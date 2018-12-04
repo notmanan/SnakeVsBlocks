@@ -13,11 +13,9 @@ public class DestroyToken extends Token implements Serializable{
 	private static final long serialVersionUID = 1L;
 	String pictureLocation = "/SnakeVsBlocks/Assets/burst.gif";
 	transient Image picture = new Image(pictureLocation);	
-//	int value;
-	
+
 	public DestroyToken() {
 		super();
-//		value = (int)Math.random() * 5  + 1;
 		img = new ImageView();
 		img.setImage(picture);
 		img.setFitHeight(tokenSize);
@@ -37,5 +35,10 @@ public class DestroyToken extends Token implements Serializable{
 		obj.getChildren().add(img);
 		obj.setTranslateX(positionX);
 		obj.setTranslateY(positionY);
+	}
+	
+	public void activateToken(Snake s) {
+		System.out.println("destroy token activation");
+		tokenAlive = false;
 	}
 }

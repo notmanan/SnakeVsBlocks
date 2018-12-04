@@ -21,6 +21,7 @@ public class Block implements Serializable {
 	double size = 97;
 	transient Color blockColor;
 	int blockVal;
+	int animateBlockDeath = 10;
 	Boolean blockAlive = true;
 	Random rand = new Random();
 	transient StackPane bt;
@@ -51,6 +52,9 @@ public class Block implements Serializable {
 	}
 
 	public boolean checkAlive() {
+		if(blockAlive == false) {
+			return blockAlive;
+		}
 		if (positionY > 903) {
 			blockAlive = false;
 		} else {
@@ -81,6 +85,7 @@ public class Block implements Serializable {
 		b.setArcHeight(15.0d);
 		b.setArcWidth(15.0d);
 		b.setFill(findColor(blockVal));
+		b.setFill(findColor(blockVal));
 		bt = new StackPane();
 		bt.setTranslateX(positionX);
 		bt.setTranslateY(positionY);
@@ -89,5 +94,23 @@ public class Block implements Serializable {
 
 	public void moveForward(double gameSpeed) {
 		setPositionY(gameSpeed + positionY);
+	}
+
+	public void handleCollision(Snake s) {
+		animateBlockDeath--;
+		if(animateBlockDeath == 0) {
+			animateBlockDeath = 5;
+			blockVal--;
+			b.setFill(findColor(blockVal));
+			
+			// TODO animate minor burst
+			s.reduceLength();
+			
+			t.setText("" + blockVal);
+			if(blockVal < 5) {
+				blockAlive = false;
+				// TODO animate entire burst
+			}
+		}
 	}
 }
