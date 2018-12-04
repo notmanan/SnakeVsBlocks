@@ -71,6 +71,13 @@ public class Snake implements Serializable{
 		t.setTranslateY(positionY - 40);
 	}
 	
+	public void setUnsureX(double xxx) {
+		this.positionX = xxx;
+		snakeNodes.getFirst().setCenterX(this.positionX);
+		t.setTranslateX(positionX-5);
+		t.setTranslateY(positionY - 40);
+	}
+	
 	public void setPositionY(double yyy) {
 		this.positionY = yyy;
 		snakeNodes.getFirst().setCenterY(this.positionY);
@@ -79,6 +86,30 @@ public class Snake implements Serializable{
 
 	public double findProposedX(double propx) {
 		// TODO if propX works:
+		double approvedX = getPositionX();
+		
+		for(int i = 1 ; i <= 10 ; i ++) {
+			double candidateX = approvedX + i*((propx - approvedX)/10);
+			boolean collision = false;
+			setUnsureX(candidateX);
+			for(Wall w : gs.wallList) {
+				if(gs.isColliding(this.returnHead(), w.wall)) {
+					collision = collision || true;
+				}
+			}
+			
+			for(Block b: gs.blockList) {
+				if(gs.isColliding(this.returnHead(), b.bt)) {
+					collision = collision || true;
+				}
+			}
+			
+			if(collision) {
+				return approvedX;
+			}else {
+				approvedX = candidateX;
+			}
+		}
 		return propx;
 		// if it doesn't work, find appropriate propX;
 		// return newX

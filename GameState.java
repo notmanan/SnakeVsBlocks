@@ -488,7 +488,7 @@ public class GameState implements Serializable {
 		return imageview.getBoundsInParent().intersects(bt.getBoundsInParent());
 	}
 
-	private boolean isColliding(Circle imageview, Rectangle wall) {
+	boolean isColliding(Circle imageview, Rectangle wall) {
 		return imageview.getBoundsInParent().intersects(wall.getBoundsInParent());
 	}
 }
