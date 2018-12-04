@@ -4,36 +4,56 @@ import java.io.Serializable;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
-//import java.awt.Image;
- 
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 public class BallToken extends Token implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	transient Image picture = new Image("/SnakeVsBlocks/Assets/ball.gif");	
+	String pictureLoc = "/SnakeVsBlocks/Assets/ball.gif";
+	transient Image picture = new Image(pictureLoc);	
 	int value;
+	transient StackPane bt;
+	transient Text t;
 	
 	public BallToken() {
 		super();
-		value = (int)Math.random() * 5  + 1;
-		obj = new ImageView();
-		obj.setImage(picture);
-		obj.setFitHeight(tokenSize);
-		obj.setFitWidth(tokenSize);
-		obj.setX(positionX);
-		obj.setY(positionY);
+		
+		value = (int)(Math.random() * 5 )+ 1;
+		t = new Text("" + (value));
+		t.setFill(Color.WHITE);
+		
+		img = new ImageView();
+		img.setImage(picture);
+		img.setFitHeight(tokenSize);
+		img.setFitWidth(tokenSize);
+		
+		obj.getChildren().addAll(img, t);
+		obj.setTranslateX(positionX);
+		obj.setTranslateY(positionY);
 	}
 	
+	
 	public void deserialize() {
-		obj = new ImageView();
-		picture = new Image("/SnakeVsBlocks/Assets/ball.gif");
-		obj.setImage(picture);
-		obj.setFitHeight(tokenSize);
-		obj.setFitWidth(tokenSize);
-		obj.setX(positionX);
-		obj.setY(positionY);
+		t = new Text("" + (value));
+		t.setFill(Color.WHITE);
+		
+		img = new ImageView();
+		picture = new Image(pictureLoc);
+		img.setImage(picture);
+		img.setFitHeight(tokenSize);
+		img.setFitWidth(tokenSize);
+		
+		obj = new StackPane();
+		obj.getChildren().addAll(img,t);
+		obj.setTranslateX(positionX);
+		obj.setTranslateY(positionY);
 	}
+
 }
+
+
+

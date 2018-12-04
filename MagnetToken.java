@@ -4,31 +4,37 @@ import java.io.Serializable;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 public class MagnetToken extends Token implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	transient Image picture = new Image("/SnakeVsBlocks/Assets/shield.gif");
+	String pictureLoc = "/SnakeVsBlocks/Assets/magnet.gif";
+	transient Image picture = new Image(pictureLoc);
 	
 	public MagnetToken() {
 		super();
-		obj = new ImageView();
-		obj.setImage(picture);
-		obj.setFitHeight(tokenSize);
-		obj.setFitWidth(tokenSize);
-		obj.setX(positionX);
-		obj.setY(positionY);
+//		value = (int)Math.random() * 5  + 1;
+		img = new ImageView();
+		img.setImage(picture);
+		img.setFitHeight(tokenSize);
+		img.setFitWidth(tokenSize);
+		obj.getChildren().add(img);
+		obj.setTranslateX(positionX);
+		obj.setTranslateY(positionY);
 	}
 	
 	public void deserialize() {
-		obj = new ImageView();
-		picture = new Image("/SnakeVsBlocks/Assets/shield.gif");
-		obj.setImage(picture);
-		obj.setFitHeight(tokenSize);
-		obj.setFitWidth(tokenSize);
-		obj.setX(positionX);
-		obj.setY(positionY);
+		img = new ImageView();
+		picture = new Image(pictureLoc);
+		img.setImage(picture);
+		img.setFitHeight(tokenSize);
+		img.setFitWidth(tokenSize);
+		obj = new StackPane();
+		obj.getChildren().add(img);
+		obj.setTranslateX(positionX);
+		obj.setTranslateY(positionY);
 	}
 }

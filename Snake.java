@@ -50,6 +50,7 @@ public class Snake implements Serializable{
 		setSnakeNodes(new LinkedList<>());
 		for (int i = 0; i < snakelength; i++) {
 			snakeNodes.add(new Circle(positionX, positionY + (i * (snakeRadius + snakeRadius)), snakeRadius));
+			snakeNodes.getLast().setFill(Color.WHITE);
 		}
 		snakeNodes.getFirst().setFill(Color.RED);
 		st.getChildren().addAll(snakeNodes.getFirst() , t);	

@@ -4,33 +4,38 @@ import java.io.Serializable;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 public class DestroyToken extends Token implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	transient Image picture = new Image("/SnakeVsBlocks/Assets/burst.gif");	
+	String pictureLocation = "/SnakeVsBlocks/Assets/burst.gif";
+	transient Image picture = new Image(pictureLocation);	
 //	int value;
 	
 	public DestroyToken() {
 		super();
 //		value = (int)Math.random() * 5  + 1;
-		obj = new ImageView();
-		obj.setImage(picture);
-		obj.setFitHeight(tokenSize);
-		obj.setFitWidth(tokenSize);
-		obj.setX(positionX);
-		obj.setY(positionY);
+		img = new ImageView();
+		img.setImage(picture);
+		img.setFitHeight(tokenSize);
+		img.setFitWidth(tokenSize);
+		obj.getChildren().add(img);
+		obj.setTranslateX(positionX);
+		obj.setTranslateY(positionY);
 	}
 	
 	public void deserialize() {
-		obj = new ImageView();
-		picture = new Image("/SnakeVsBlocks/Assets/burst.gif");
-		obj.setImage(picture);
-		obj.setFitHeight(tokenSize);
-		obj.setFitWidth(tokenSize);
-		obj.setX(positionX);
-		obj.setY(positionY);
+		img = new ImageView();
+		picture = new Image(pictureLocation);
+		img.setImage(picture);
+		img.setFitHeight(tokenSize);
+		img.setFitWidth(tokenSize);
+		obj = new StackPane();
+		obj.getChildren().add(img);
+		obj.setTranslateX(positionX);
+		obj.setTranslateY(positionY);
 	}
 }

@@ -49,11 +49,6 @@ public class GameState implements Serializable {
 		gameOver = false;
 		this.parentGame = parentGame;
 		s = new Snake(this);
-		System.out.println("done this");
-		System.out.println("done this");
-		System.out.println("done this");
-		System.out.println("done this");
-		System.out.println("done this");
 		wallList = new LinkedList<>();
 		blockList = new LinkedList<>();
 		tokenList = new LinkedList<>();
@@ -116,13 +111,12 @@ public class GameState implements Serializable {
 			wallGroup.getChildren().add(w.wall);
 		}
 	}
-	
+
 	private void importSerializedTokens() {
 		for (Token t : tokenList) {
 			blockGroup.getChildren().add(t.obj);
 		}
 	}
-
 
 	public void begin(Stage primaryStage) {
 		System.out.println("New Game begun");
@@ -223,6 +217,9 @@ public class GameState implements Serializable {
 	private void spawnShieldToken() {
 		// TODO Auto-generated method stub
 		System.out.println("spawn shield token");
+		ShieldToken temp = new ShieldToken();
+		tokenList.add(temp);
+		tokenGroup.getChildren().add(tokenList.getLast().obj);
 	}
 
 	private void spawnMagnetToken() {
@@ -251,14 +248,12 @@ public class GameState implements Serializable {
 
 	protected void updateOnScreenElements() {
 		updateBlockLocation();
-		deleteDeadBlocks();
-
 		updateTokenLocation();
-//		deleteDeadTokens();
-
 		updateWallLocation();
-		deleteDeadWalls();
 
+		deleteDeadBlocks();
+		deleteDeadTokens();
+		deleteDeadWalls();
 	}
 
 	private void updateTokenLocation() {
@@ -299,6 +294,17 @@ public class GameState implements Serializable {
 			if (!temp.checkAlive()) {
 				wallGroup.getChildren().remove(temp.wall);
 				wallList.remove(temp);
+				i--;
+			}
+		}
+	}
+
+	private void deleteDeadTokens() {
+		for (int i = 0; i < tokenList.size(); i++) {
+			Token temp = tokenList.get(i);
+			if (!temp.checkAlive()) {
+				tokenGroup.getChildren().remove(temp.obj);
+				tokenList.remove(temp);
 				i--;
 			}
 		}
@@ -362,7 +368,6 @@ public class GameState implements Serializable {
 	public boolean blockSpawnWindow() {
 		if (framesElapsed > blockCount * 200) {
 			blockCount++;
-//			System.out.println	("Block Spawn Window: " + framesElapsed);
 			return true;
 		} else {
 			return false;

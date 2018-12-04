@@ -29,7 +29,7 @@ public class Wall implements Serializable {
 
 		double yAxis = -300; // TODO remove later, temporary to see where the wall lands
 		wall = new Rectangle(i * 100 + 100, yAxis, 3, size * 100);
-		wallColor = Color.RED;
+		wallColor = Color.WHITE;
 
 		wall.setFill(wallColor);
 		wall.setArcHeight(15.0d);
@@ -73,7 +73,7 @@ public class Wall implements Serializable {
 
 	public void deserialize() {
 		wall = new Rectangle(getPositionX(), getPositionY(), 3, wallSize);
-		wallColor = Color.RED;
+		wallColor = Color.WHITE;
 		wall.setFill(wallColor);
 		wall.setArcHeight(15.0d);
 		wall.setArcWidth(15.0d);
