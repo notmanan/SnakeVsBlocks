@@ -28,7 +28,7 @@ public class GameState implements Serializable {
 	transient public Scene gameScene;
 
 	private static final long serialVersionUID = 1L;
-	private Snake s;
+	Snake s;
 	LinkedList<Block> blockList;
 	LinkedList<Wall> wallList;
 	LinkedList<Token> tokenList;
@@ -38,6 +38,8 @@ public class GameState implements Serializable {
 	double fps = 0;
 
 	int score;
+	destroyBlockSphere dbs;
+	magnetSphere ms;
 
 	boolean arrestGame, gameOver;
 
@@ -170,8 +172,8 @@ public class GameState implements Serializable {
 				// TODO
 				collectTokens();
 				
-				
-				
+				handleDBS();
+				handleMS();
 				
 				
 				
@@ -215,6 +217,53 @@ public class GameState implements Serializable {
 		});
 
 		primaryStage.setScene(gameScene);
+	}
+
+	protected void handleMS() {
+		// TODO Auto-generated method stub
+		if(ms == null) {
+			// do nothing
+		}else {
+			if(!g.getChildren().contains(ms.sphere)) {
+				g.getChildren().add(ms.sphere);
+			}
+			
+			for(Token t: tokenList) {
+				if(t instanceof BallToken && isColliding(ms.sphere,t.obj)) {
+					t.attractToken(ms);
+				}
+			}
+			
+			ms.animate();
+			if(!ms.alive) {
+				g.getChildren().remove(ms.sphere);
+				ms = null;
+			}
+		}
+	}
+
+	protected void handleDBS() {
+		// TODO Auto-generated method stub
+		if(dbs == null) {
+			//do nothing
+		}else {
+			if(!g.getChildren().contains(dbs.sphere)) {
+				g.getChildren().add(dbs.sphere);
+			}
+			
+			for(Block b: blockList) {
+				if(isColliding(dbs.sphere, b.bt)) {
+					b.burst();
+				}
+				
+			}
+		
+			dbs.animate(returnEffectiveGameSpeed());
+			if(!dbs.alive) {
+				g.getChildren().remove(dbs.sphere);
+				dbs = null;
+			}
+		}
 	}
 
 	protected void collectTokens() {
@@ -276,28 +325,28 @@ public class GameState implements Serializable {
 
 	private void spawnShieldToken() {
 //		System.out.println("spawn shield token");
-		ShieldToken temp = new ShieldToken();
+		ShieldToken temp = new ShieldToken(this);
 		tokenList.add(temp);
 		tokenGroup.getChildren().add(tokenList.getLast().obj);
 	}
 
 	private void spawnMagnetToken() {
 //		System.out.println("spawn magnet");
-		MagnetToken temp = new MagnetToken();
+		MagnetToken temp = new MagnetToken(this);
 		tokenList.add(temp);
 		tokenGroup.getChildren().add(tokenList.getLast().obj);
 	}
 
 	private void spawnDestroyBlockToken() {
 //		System.out.println("spawn destroy block");
-		DestroyToken temp = new DestroyToken();
+		DestroyToken temp = new DestroyToken(this);
 		tokenList.add(temp);
 		tokenGroup.getChildren().add(tokenList.getLast().obj);
 	}
 
 	private void spawnBallToken() {
 //		System.out.println("spawn ball token");
-		BallToken temp = new BallToken();
+		BallToken temp = new BallToken(this);
 		tokenList.add(temp);
 		tokenGroup.getChildren().add(tokenList.getLast().obj);
 	}

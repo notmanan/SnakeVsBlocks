@@ -14,8 +14,8 @@ public class MagnetToken extends Token implements Serializable {
 	String pictureLoc = "/SnakeVsBlocks/Assets/magnet.gif";
 	transient Image picture = new Image(pictureLoc);
 	
-	public MagnetToken() {
-		super();
+	public MagnetToken(GameState gs) {
+		super(gs);
 //		value = (int)Math.random() * 5  + 1;
 		img = new ImageView();
 		img.setImage(picture);
@@ -41,6 +41,11 @@ public class MagnetToken extends Token implements Serializable {
 	public void activateToken(Snake s) {
 		System.out.println("magnet token activation");
 		tokenAlive = false;
+		if(gs.ms!= null) {
+			gs.g.getChildren().remove(gs.ms.sphere);
+			gs.ms = null;
+		}
+		gs.ms = new magnetSphere(s);
 	}
 
 }

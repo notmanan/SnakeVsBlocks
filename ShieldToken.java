@@ -14,8 +14,8 @@ public class ShieldToken extends Token implements Serializable{
 	String pictureLoc = "/SnakeVsBlocks/Assets/shield.gif";
 	transient Image picture = new Image(pictureLoc);
 	
-	public ShieldToken() {
-		super();
+	public ShieldToken(GameState gs) {
+		super(gs);
 //		value = (int)Math.random() * 5  + 1;
 		img = new ImageView();
 		img.setImage(picture);
@@ -41,6 +41,7 @@ public class ShieldToken extends Token implements Serializable{
 	public void activateToken(Snake s) {
 		System.out.println("shield token activation");
 		tokenAlive = false;
+		s.activateShield();
 	}
 
 }

@@ -24,7 +24,9 @@ public class Snake implements Serializable{
 	private GameState gs;
 	transient Label t;
 	transient StackPane st;
-
+	boolean shieldActive = false;
+	int shieldTime = 0;
+	
 	public Snake(GameState gs2) {
 		st = new StackPane();
 		t = new Label(""+snakelength);
@@ -33,7 +35,7 @@ public class Snake implements Serializable{
 		t.prefWidth(10);
 		gs = gs2;
 		positionX = 301;
-		positionY = 400;
+		positionY = 600;
 		idealY = positionY;
 		setSnakeNodes(new LinkedList<>());
 		for (int i = 0; i < snakelength; i++) {
@@ -113,13 +115,7 @@ public class Snake implements Serializable{
 	}
 
 	public void updateNodes() {
-//		public void setPositionY(double yyy) {
-//			this.positionY = yyy;
-//			snakeNodes.getFirst().setCenterX(this.positionY);
-//		}
-
 		setPositionY(getPositionY() + (idealY - positionY)/20);
-		
 		for (int i = 1; i < snakeNodes.size(); i++) {
 			Circle topCircle = snakeNodes.get(i - 1);
 			Circle currCircle = snakeNodes.get(i);
@@ -141,11 +137,19 @@ public class Snake implements Serializable{
 				currCircle.setCenterY(topCircle.getCenterY() + currCircle.getRadius() * 2);
 			}
 		}
+		
+		if(shieldActive) {
+			snakeNodes.getFirst().setFill(Color.DARKORANGE);
+			shieldTime--;
+			if(shieldTime < 0) {
+				snakeNodes.getFirst().setFill(Color.RED);	
+				shieldActive = false;
+			}
+		}
 	}
 
 	public void reduceLength() {
 		// TODO animate snake death
-		
 		snakelength --;
 		if(snakelength <= 0) {
 			System.out.println("game has ended");
@@ -171,5 +175,10 @@ public class Snake implements Serializable{
 		snakelength += inc;
 		t.setText("" + snakelength);
 	}
-	
+
+	public void activateShield() {
+		// TODO ADD SOME SORT OF TIMER FOR POWER-UPS
+		shieldActive = true;
+		shieldTime = (int) (gs.fps * 4.5);
+	}
 }

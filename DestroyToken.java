@@ -14,8 +14,8 @@ public class DestroyToken extends Token implements Serializable{
 	String pictureLocation = "/SnakeVsBlocks/Assets/burst.gif";
 	transient Image picture = new Image(pictureLocation);	
 
-	public DestroyToken() {
-		super();
+	public DestroyToken(GameState gs) {
+		super(gs);
 		img = new ImageView();
 		img.setImage(picture);
 		img.setFitHeight(tokenSize);
@@ -40,5 +40,6 @@ public class DestroyToken extends Token implements Serializable{
 	public void activateToken(Snake s) {
 		System.out.println("destroy token activation");
 		tokenAlive = false;
+		gs.dbs = new destroyBlockSphere(this);
 	}
 }

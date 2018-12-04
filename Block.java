@@ -97,20 +97,29 @@ public class Block implements Serializable {
 	}
 
 	public void handleCollision(Snake s) {
-		animateBlockDeath--;
-		if(animateBlockDeath == 0) {
-			animateBlockDeath = 5;
-			blockVal--;
-			b.setFill(findColor(blockVal));
-			
-			// TODO animate minor burst
-			s.reduceLength();
-			
-			t.setText("" + blockVal);
-			if(blockVal < 5) {
-				blockAlive = false;
-				// TODO animate entire burst
-			}
+		if(s.shieldActive) {
+			burst();
+		}else {
+			animateBlockDeath--;
+			if(animateBlockDeath == 0) {
+				animateBlockDeath = 5;
+				blockVal--;
+				b.setFill(findColor(blockVal));
+				
+				// TODO animate minor burst
+				s.reduceLength();
+				
+				t.setText("" + blockVal);
+				if(blockVal < 5) {
+					burst();
+				}
+			}			
 		}
+	}
+
+	public void burst() {
+		// TODO add scoring system and animation
+		System.out.println("burst");
+		blockAlive = false;
 	}
 }

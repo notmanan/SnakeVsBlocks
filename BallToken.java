@@ -19,8 +19,8 @@ public class BallToken extends Token implements Serializable{
 	transient StackPane bt;
 	transient Text t;
 	
-	public BallToken() {
-		super();
+	public BallToken(GameState gs) {
+		super(gs);
 		
 		value = (int)(Math.random() * 5 )+ 1;
 		t = new Text("" + (value));
