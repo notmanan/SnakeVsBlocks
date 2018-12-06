@@ -110,12 +110,12 @@ public class Block implements Serializable {
 				s.reduceLength();
 				
 				t.setText("" + blockVal);
-				if(blockVal < 5) {
-					int x = blockVal;
-					while(x>0) {
-						s.reduceLength();
-						x--;
-					}
+				if(blockVal <= 0) {
+//					int x = blockVal;
+//					while(x>0) {
+//						s.reduceLength();
+//						x--;
+//					}
 					burst();
 				}
 			}			
