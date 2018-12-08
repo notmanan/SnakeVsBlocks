@@ -21,6 +21,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class GameState implements Serializable {
@@ -37,7 +38,8 @@ public class GameState implements Serializable {
 	double prevFrameTime = 0;
 	double fps = 0;
 
-	int score;
+	int score = 0;
+	transient Text scoreCard;
 	destroyBlockSphere dbs;
 	magnetSphere ms;
 
@@ -128,17 +130,22 @@ public class GameState implements Serializable {
 
 	public void begin(Stage primaryStage) {
 		System.out.println("New Game begun");
+		scoreCard = new Text(20, 60, "" + score);
+		scoreCard.setFill(Color.RED);
+		String scoreCardCss = ".modal-dialog {\r\n" + "    -fx-padding: 20;\r\n" + "    -fx-spacing: 10;\r\n"
+				+ "    -fx-alignment: center;\r\n" + "    -fx-font-size: 60;\r\n" + "}";
+		scoreCard.setStyle(scoreCardCss);
 		g = new Group();
 		blockGroup = new Group();
 		wallGroup = new Group();
 		tokenGroup = new Group();
 
+		// TODO
 		importSerializedBlocks();
 		importSerializedWalls();
-		// TODO
 		importSerializedTokens();
 
-		g.getChildren().addAll(blockGroup, wallGroup, tokenGroup);
+		g.getChildren().addAll(blockGroup, wallGroup, tokenGroup, scoreCard);
 
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
@@ -146,7 +153,6 @@ public class GameState implements Serializable {
 				fps = getFramesPerSecond(now);
 				framesElapsed += returnEffectiveGameSpeed();
 				if (spawnWindow()) {
-//					System.out.println("Window Found : " + framesElapsed);
 					Random rand = new Random();
 					int ch = rand.nextInt(80);
 					if (ch > 60) {
@@ -157,7 +163,6 @@ public class GameState implements Serializable {
 						spawnBlocks(6);
 					}
 					if (!allowBlock) {
-//						System.out.println("Token Spawn Window: " + framesElapsed);
 						spawnToken();
 					}
 				}
@@ -169,15 +174,10 @@ public class GameState implements Serializable {
 					unarrestMovement();
 				}
 
-				// TODO
 				collectTokens();
-				
 				handleDBS();
 				handleMS();
-				
-				
-				
-				
+
 				s.updateNodes();
 			}
 		};
@@ -191,7 +191,6 @@ public class GameState implements Serializable {
 
 		gameScene.setOnKeyPressed(e -> {
 			double keyBoardX = s.getSnakeNodes().get(0).getCenterX();
-			// TODO change snake movement to speed model instead
 			if (e.getCode() == KeyCode.LEFT) {
 				keyBoardX = s.getSnakeNodes().get(0).getCenterX() - moveSnakeSpeed;
 			} else if (e.getCode() == KeyCode.RIGHT) {
@@ -221,21 +220,21 @@ public class GameState implements Serializable {
 
 	protected void handleMS() {
 		// TODO Auto-generated method stub
-		if(ms == null) {
+		if (ms == null) {
 			// do nothing
-		}else {
-			if(!g.getChildren().contains(ms.sphere)) {
+		} else {
+			if (!g.getChildren().contains(ms.sphere)) {
 				g.getChildren().add(ms.sphere);
 			}
-			
-			for(Token t: tokenList) {
-				if(t instanceof BallToken && isColliding(ms.sphere,t.obj)) {
+
+			for (Token t : tokenList) {
+				if (t instanceof BallToken && isColliding(ms.sphere, t.obj)) {
 					t.attractToken(ms);
 				}
 			}
-			
+
 			ms.animate();
-			if(!ms.alive) {
+			if (!ms.alive) {
 				g.getChildren().remove(ms.sphere);
 				ms = null;
 			}
@@ -243,23 +242,23 @@ public class GameState implements Serializable {
 	}
 
 	protected void handleDBS() {
-		// TODO Auto-generated method stub
-		if(dbs == null) {
-			//do nothing
-		}else {
-			if(!g.getChildren().contains(dbs.sphere)) {
+		if (dbs == null) {
+			// do nothing
+		} else {
+			if (!g.getChildren().contains(dbs.sphere)) {
 				g.getChildren().add(dbs.sphere);
 			}
-			
-			for(Block b: blockList) {
-				if(isColliding(dbs.sphere, b.bt)) {
+
+			for (Block b : blockList) {
+				if (isColliding(dbs.sphere, b.bt)) {
+					updateScore(b.blockVal);
 					b.burst();
 				}
-				
+
 			}
-		
+
 			dbs.animate(returnEffectiveGameSpeed());
-			if(!dbs.alive) {
+			if (!dbs.alive) {
 				g.getChildren().remove(dbs.sphere);
 				dbs = null;
 			}
@@ -268,8 +267,8 @@ public class GameState implements Serializable {
 
 	protected void collectTokens() {
 		// TODO Auto-generated method stub
-		for(Token t: tokenList) {
-			if(isColliding(s.returnHead(), t.obj) && t.tokenAlive) {
+		for (Token t : tokenList) {
+			if (isColliding(s.returnHead(), t.obj) && t.tokenAlive) {
 				t.activateToken(s);
 			}
 		}
@@ -279,9 +278,7 @@ public class GameState implements Serializable {
 		boolean collisionFound = false;
 		for (Block b : blockList) {
 			if (isColliding(s.returnHead(), b.bt)) {
-//				System.out.println("collision with block: " + b.blockVal);
 				collisionFound = collisionFound || true;
-				// TODO
 				b.handleCollision(s);
 			}
 		}
@@ -311,7 +308,6 @@ public class GameState implements Serializable {
 		Random rand = new Random();
 		int tokenSpawnner = rand.nextInt(1000);
 		if (tokenSpawnner < 400) {
-//			System.out.println("spawn no token");
 		} else if (tokenSpawnner < 700) {
 			spawnBallToken();
 		} else if (tokenSpawnner < 800) {
@@ -324,28 +320,24 @@ public class GameState implements Serializable {
 	}
 
 	private void spawnShieldToken() {
-//		System.out.println("spawn shield token");
 		ShieldToken temp = new ShieldToken(this);
 		tokenList.add(temp);
 		tokenGroup.getChildren().add(tokenList.getLast().obj);
 	}
 
 	private void spawnMagnetToken() {
-//		System.out.println("spawn magnet");
 		MagnetToken temp = new MagnetToken(this);
 		tokenList.add(temp);
 		tokenGroup.getChildren().add(tokenList.getLast().obj);
 	}
 
 	private void spawnDestroyBlockToken() {
-//		System.out.println("spawn destroy block");
 		DestroyToken temp = new DestroyToken(this);
 		tokenList.add(temp);
 		tokenGroup.getChildren().add(tokenList.getLast().obj);
 	}
 
 	private void spawnBallToken() {
-//		System.out.println("spawn ball token");
 		BallToken temp = new BallToken(this);
 		tokenList.add(temp);
 		tokenGroup.getChildren().add(tokenList.getLast().obj);
@@ -490,5 +482,11 @@ public class GameState implements Serializable {
 
 	boolean isColliding(Circle imageview, Rectangle wall) {
 		return imageview.getBoundsInParent().intersects(wall.getBoundsInParent());
+	}
+
+	public void updateScore(int blockVal) {
+		// TODO Auto-generated method stub
+		score += blockVal;
+		scoreCard.setText("" + score);
 	}
 }

@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 //import javafx.scene.text.Text;
 
-public class Snake implements Serializable{
+public class Snake implements Serializable {
 	/**
 	 * 
 	 */
@@ -21,17 +21,17 @@ public class Snake implements Serializable{
 	private int snakelength = 25;
 	transient private LinkedList<Circle> snakeNodes;
 	private double snakeRadius = 15;
-	private GameState gs;
+	GameState gs;
 	transient Label t;
 	transient StackPane st;
 	boolean shieldActive = false;
 	int shieldTime = 0;
-	
+
 	public Snake(GameState gs2) {
 		st = new StackPane();
-		t = new Label(""+snakelength);
-		t.setTextFill(Color.WHITE);	
-		//		t. change text size
+		t = new Label("" + snakelength);
+		t.setTextFill(Color.WHITE);
+		// t. change text size
 		t.prefWidth(10);
 		gs = gs2;
 		positionX = 301;
@@ -43,12 +43,12 @@ public class Snake implements Serializable{
 			snakeNodes.getLast().setFill(Color.WHITE);
 		}
 		snakeNodes.getFirst().setFill(Color.RED);
-		st.getChildren().addAll(snakeNodes.getFirst() , t);	
+		st.getChildren().addAll(snakeNodes.getFirst(), t);
 	}
-	
+
 	public void deserialize() {
 		st = new StackPane();
-		t = new Label(""+snakelength);
+		t = new Label("" + snakelength);
 		t.setTextFill(Color.WHITE);
 		t.prefWidth(10);
 		setSnakeNodes(new LinkedList<>());
@@ -57,7 +57,7 @@ public class Snake implements Serializable{
 			snakeNodes.getLast().setFill(Color.WHITE);
 		}
 		snakeNodes.getFirst().setFill(Color.RED);
-		st.getChildren().addAll(snakeNodes.getFirst() , t);	
+		st.getChildren().addAll(snakeNodes.getFirst(), t);
 	}
 
 	public double getPositionX() {
@@ -67,17 +67,17 @@ public class Snake implements Serializable{
 	public void setPositionX(double xxx) {
 		this.positionX = findProposedX(xxx);
 		snakeNodes.getFirst().setCenterX(this.positionX);
-		t.setTranslateX(positionX-5);
+		t.setTranslateX(positionX - 5);
 		t.setTranslateY(positionY - 40);
 	}
-	
+
 	public void setUnsureX(double xxx) {
 		this.positionX = xxx;
 		snakeNodes.getFirst().setCenterX(this.positionX);
-		t.setTranslateX(positionX-5);
+		t.setTranslateX(positionX - 5);
 		t.setTranslateY(positionY - 40);
 	}
-	
+
 	public void setPositionY(double yyy) {
 		this.positionY = yyy;
 		snakeNodes.getFirst().setCenterY(this.positionY);
@@ -87,26 +87,26 @@ public class Snake implements Serializable{
 	public double findProposedX(double propx) {
 		// TODO if propX works:
 		double approvedX = getPositionX();
-		
-		for(int i = 1 ; i <= 10 ; i ++) {
-			double candidateX = approvedX + i*((propx - approvedX)/10);
+
+		for (int i = 1; i <= 10; i++) {
+			double candidateX = approvedX + i * ((propx - approvedX) / 10);
 			boolean collision = false;
 			setUnsureX(candidateX);
-			for(Wall w : gs.wallList) {
-				if(gs.isColliding(this.returnHead(), w.wall)) {
+			for (Wall w : gs.wallList) {
+				if (gs.isColliding(this.returnHead(), w.wall)) {
 					collision = collision || true;
 				}
 			}
-			
-			for(Block b: gs.blockList) {
-				if(gs.isColliding(this.returnHead(), b.bt)) {
+
+			for (Block b : gs.blockList) {
+				if (gs.isColliding(this.returnHead(), b.bt)) {
 					collision = collision || true;
 				}
 			}
-			
-			if(collision) {
+
+			if (collision) {
 				return approvedX;
-			}else {
+			} else {
 				approvedX = candidateX;
 			}
 		}
@@ -120,16 +120,15 @@ public class Snake implements Serializable{
 		return positionY;
 	}
 
-
 	public int getSnakeLength() throws NoLengthException {
 		return snakelength;
 	}
 
 	public void setSnakeLength(int length) {
 		this.snakelength = length;
-		t.setText(""+length);
+		t.setText("" + length);
 	}
-	
+
 	public void display() {
 	}
 
@@ -146,7 +145,7 @@ public class Snake implements Serializable{
 	}
 
 	public void updateNodes() {
-		setPositionY(getPositionY() + (idealY - positionY)/20);
+		setPositionY(getPositionY() + (idealY - positionY) / 20);
 		for (int i = 1; i < snakeNodes.size(); i++) {
 			Circle topCircle = snakeNodes.get(i - 1);
 			Circle currCircle = snakeNodes.get(i);
@@ -171,39 +170,39 @@ public class Snake implements Serializable{
 				currCircle.setCenterY(topCircle.getCenterY() + currCircle.getRadius() * 2);
 			}
 		}
-		
-		if(shieldActive) {
+
+		if (shieldActive) {
 			snakeNodes.getFirst().setFill(Color.DARKORANGE);
 			shieldTime--;
-			if(shieldTime < 0) {
-				snakeNodes.getFirst().setFill(Color.RED);	
+			if (shieldTime < 0) {
+				snakeNodes.getFirst().setFill(Color.RED);
 				shieldActive = false;
 			}
 		}
 	}
-	
+
 	public double findProposedX(Circle c, double propx) {
 		// TODO if propX works:
 		double approvedX = c.getCenterX();
-		
-		for(int i = 1 ; i <= 10 ; i ++) {
-			double candidateX = approvedX + i*((propx - approvedX)/10);
+
+		for (int i = 1; i <= 10; i++) {
+			double candidateX = approvedX + i * ((propx - approvedX) / 10);
 			boolean collision = false;
 			setUnsureX(c, candidateX);
-			for(Wall w : gs.wallList) {
-				if(gs.isColliding(c, w.wall)) {
+			for (Wall w : gs.wallList) {
+				if (gs.isColliding(c, w.wall)) {
 					collision = collision || true;
 				}
 			}
-			
-			for(Block b: gs.blockList) {
-				if(gs.isColliding(c, b.bt)) {
+
+			for (Block b : gs.blockList) {
+				if (gs.isColliding(c, b.bt)) {
 					collision = collision || true;
 				}
 			}
-			if(collision) {
+			if (collision) {
 				return approvedX;
-			}else {
+			} else {
 				approvedX = candidateX;
 			}
 		}
@@ -211,31 +210,31 @@ public class Snake implements Serializable{
 		// if it doesn't work, find appropriate propX;
 		// return newX
 	}
-	
+
 	public void setUnsureX(Circle c, double xxx) {
 		c.setCenterX(xxx);
 	}
 
 	public void reduceLength() {
 		// TODO animate snake death
-		snakelength --;
-		if(snakelength <= 0) {
+		snakelength--;
+		if (snakelength <= 0) {
 			System.out.println("game has ended");
 //			gs.endGame();
 		}
-		
+
 		t.setText("" + snakelength);
-		
+
 		gs.g.getChildren().remove(snakeNodes.getFirst());
 		snakeNodes.remove(snakeNodes.getFirst());
 		snakeNodes.getFirst().setFill(Color.RED);
-		
+
 //		gs.g.getChildren().remove(snakeNodes.getLast());
 //		snakeNodes.remove(snakeNodes.getLast());		
 	}
-	
+
 	public void increaseLength(int inc) {
-		for (int i = snakelength; i < snakelength+inc; i++) {
+		for (int i = snakelength; i < snakelength + inc; i++) {
 			snakeNodes.add(new Circle(positionX, positionY + (i * (snakeRadius + snakeRadius)), snakeRadius));
 			snakeNodes.getLast().setFill(Color.WHITE);
 			gs.g.getChildren().add(snakeNodes.getLast());
