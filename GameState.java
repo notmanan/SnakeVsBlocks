@@ -219,10 +219,7 @@ public class GameState implements Serializable {
 	}
 
 	protected void handleMS() {
-		// TODO Auto-generated method stub
-		if (ms == null) {
-			// do nothing
-		} else {
+		if (!(ms == null)) {
 			if (!g.getChildren().contains(ms.sphere)) {
 				g.getChildren().add(ms.sphere);
 			}
@@ -254,7 +251,6 @@ public class GameState implements Serializable {
 					updateScore(b.blockVal);
 					b.burst();
 				}
-
 			}
 
 			dbs.animate(returnEffectiveGameSpeed());
@@ -266,7 +262,6 @@ public class GameState implements Serializable {
 	}
 
 	protected void collectTokens() {
-		// TODO Auto-generated method stub
 		for (Token t : tokenList) {
 			if (isColliding(s.returnHead(), t.obj) && t.tokenAlive) {
 				t.activateToken(s);
@@ -425,7 +420,6 @@ public class GameState implements Serializable {
 		int blockSpawnCount = 0;
 		if (n <= 20) {
 			blockSpawnCount = (n / 3) > maxBlocks ? maxBlocks : (n / 3);
-//			System.out.println("blocks: " + blockSpawnCount);
 		}
 		LinkedList<Integer> blockLoc = new LinkedList<>();
 
@@ -485,7 +479,6 @@ public class GameState implements Serializable {
 	}
 
 	public void updateScore(int blockVal) {
-		// TODO Auto-generated method stub
 		score += blockVal;
 		scoreCard.setText("" + score);
 	}
