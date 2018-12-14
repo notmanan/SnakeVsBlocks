@@ -1,13 +1,21 @@
 package SnakeVsBlocks;
 
+import java.io.Serializable;
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class magnetSphere {
+public class magnetSphere implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	double positionX;
 	double positionY;
 	double radius;
+	
 	transient Circle sphere;
+	
 	Snake tempSnake;
 	boolean alive;
 	int magnetTime;
@@ -41,5 +49,12 @@ public class magnetSphere {
 	public void setX(double x) {
 		positionX = x;
 		sphere.setCenterX(positionX);
+	}
+	
+	public void deserialize() {
+//		TODO
+		sphere = new Circle(positionX, positionY, radius);
+		sphere.setOpacity(0.2);
+		sphere.setFill(Color.BLUE);
 	}
 }

@@ -1,26 +1,36 @@
 package SnakeVsBlocks;
 
+import java.io.Serializable;
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class destroyBlockSphere {
+public class destroyBlockSphere implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	double positionX;
 	double positionY;
 	double radius;
 	double increase;
 	int frames;
+	double currentTransparency;
+
 	transient Circle sphere;
+
 	boolean alive;
 
 	public destroyBlockSphere(DestroyToken D) {
-		positionX = D.positionX + D.tokenSize/2;
-		positionY = D.positionY+ D.tokenSize/2;
+		positionX = D.positionX + D.tokenSize / 2;
+		positionY = D.positionY + D.tokenSize / 2;
 		frames = 30;
 		radius = 5;
 		increase = 20;
 		alive = true;
 		sphere = new Circle(positionX, positionY, radius);
-		sphere.setOpacity(0.2);
+		currentTransparency = 0.2;
+		sphere.setOpacity(currentTransparency);
 		sphere.setFill(Color.WHITE);
 	}
 
@@ -29,8 +39,9 @@ public class destroyBlockSphere {
 			frames--;
 			radius += increase;
 			sphere.setRadius(radius);
-			double amt = 0.2/30;
-			sphere.setOpacity(sphere.getOpacity() - amt);
+			double amt = 0.2 / 30;
+			currentTransparency = sphere.getOpacity() - amt;
+			sphere.setOpacity(currentTransparency);
 		} else {
 			alive = false;
 		}
@@ -44,5 +55,11 @@ public class destroyBlockSphere {
 
 	public void moveForward(double offset) {
 		setY(positionY + offset);
+	}
+
+	public void deserialize() {
+		sphere = new Circle(positionX, positionY, radius);
+		sphere.setOpacity(currentTransparency);
+		sphere.setFill(Color.WHITE);
 	}
 }

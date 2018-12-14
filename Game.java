@@ -22,10 +22,12 @@ public class Game extends Application implements Serializable {
 	private static final long serialVersionUID = 1L;
 	GameState gs;
 	LinkedList<RankingPosition> Leaderboard;
+
 	transient public Scene mainScene, leaderBoardScene;
-	transient public Button playbtn, resumeBtn, leaderboardBtn;
-	String filename = "myGameinfo.txt";
 	transient Stage primaryStage;
+	transient public Button playbtn, resumeBtn, leaderboardBtn;
+	
+	String filename = "myGameinfo.txt";
 	static String[] args;
 
 	public Game() {
@@ -232,6 +234,13 @@ public class Game extends Application implements Serializable {
 			in.close();
 			file.close();
 
+			if(gs.ms!=null) {
+				gs.ms.deserialize();
+			}
+			if(gs.dbs!=null) {
+				gs.dbs.deserialize();
+			}
+			
 			System.out.println("Object has been deserialized ");
 		}
 
